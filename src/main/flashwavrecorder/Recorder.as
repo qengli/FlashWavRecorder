@@ -39,13 +39,14 @@ package flashwavrecorder {
       recorderInterface.saveButton = saveButton;
 
       saveButton.addEventListener(MouseEvent.MOUSE_UP, mouseReleased);
-      saveButton.visible = false;
+      //saveButton.visible = false;
 
       recorderInterface.ready(saveButton.width, saveButton.height);
     }
 
     public function save():void {
-      recorderInterface.save();
+      //recorderInterface.save();
+      recorderInterface.record("audio", "audio.wav");
     }
 
     private function mouseReleased(event:MouseEvent):void {

@@ -95,7 +95,7 @@ package flashwavrecorder {
       }
     }
     public function hide():void {
-      if(saveButton) {
+       if(saveButton) {
         saveButton.visible = false;
       }
     }
@@ -188,6 +188,7 @@ package flashwavrecorder {
       if(this.recorder.recording) {
         this.recorder.stop();
         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING_STOPPED, this.recorder.currentSoundName, this.recorder.duration());
+        this.save();
       } else {
         this.recorder.record(name, filename);
         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.RECORDING, this.recorder.currentSoundName);
