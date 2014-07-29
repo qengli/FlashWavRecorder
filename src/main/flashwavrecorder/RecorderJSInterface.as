@@ -39,6 +39,7 @@ package flashwavrecorder {
     public static var SAVE_PRESSED:String = "save_pressed";
     public static var SAVING:String = "saving";
     public static var SAVED:String = "saved";
+    public static var SAVE_CANCEL:String = "save_cancel";
     public static var SAVE_FAILED:String = "save_failed";
     public static var SAVE_PROGRESS:String = "save_progress";
 
@@ -317,7 +318,10 @@ package flashwavrecorder {
     }
 
     private function _save(name:String, filename:String):void {
-
+      if ("" == this.uploadUrl) {
+         ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.SAVE_CANCEL, this.recorder.currentSoundName, "there is no action url");
+         return;
+      }
       var boundary:String = MultiPartFormUtil.boundary();
 
       this.uploadFormData.push( MultiPartFormUtil.fileField(this.uploadFieldName, recorder.convertToWav(name), filename, "audio/wav") );
