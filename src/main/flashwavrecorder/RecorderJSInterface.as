@@ -11,6 +11,7 @@ package flashwavrecorder {
   import flash.net.URLLoader;
   import flash.net.URLRequest;
   import flash.utils.ByteArray;
+  import flash.net.URLRequestHeader;
 
   public class RecorderJSInterface {
 
@@ -50,6 +51,8 @@ package flashwavrecorder {
     public var uploadFormData:Array;
     public var uploadFieldName:String;
     public var saveButton:DisplayObject;
+    public var timestampHeader:URLRequestHeader;
+    public var signatureHeader:URLRequestHeader;
 
     public function RecorderJSInterface() {
       this.recorder = new MicrophoneRecorder();
@@ -121,10 +124,22 @@ package flashwavrecorder {
       ExternalInterface.call(this.EVENT_HANDLER, RecorderJSInterface.MICROPHONE_SAMPLES, event.samples);
     }
 
-    public function init(url:String=null, fieldName:String=null, formData:Array=null):void {
+    public function init(url:String=null, fieldName:String=null, formData:Array=null, signature:String=null, timestamp:String=null):void {
       this.uploadUrl = url;
       this.uploadFieldName = fieldName;
       this.update(formData);
+      
+      if (null != timestamp) {
+        this.timestampHeader = new URLRequestHeader("xvs-timestamp", timestamp);
+      } else {
+        this.timestampHeader = null;
+      }
+
+      if (null != signature) {
+        this.signatureHeader = new URLRequestHeader("xvs-signature", signature);
+      } else {
+        this.signatureHeader = null;
+      }
     }
 
     public function update(formData:Array=null):void {
@@ -327,8 +342,14 @@ package flashwavrecorder {
       this.uploadFormData.push( MultiPartFormUtil.fileField(this.uploadFieldName, recorder.convertToWav(name), filename, "audio/wav") );
       var request:URLRequest = MultiPartFormUtil.request(this.uploadFormData);
       this.uploadFormData.pop();
-
+        
       request.url = this.uploadUrl;
+      if (null != this.signatureHeader) {
+        request.requestHeaders.push(this.signatureHeader);
+      }
+      if (null != this.timestampHeader) {
+        request.requestHeaders.push(this.timestampHeader);
+      }
 
       var loader:URLLoader = new URLLoader();
       loader.addEventListener(Event.COMPLETE, onSaveComplete);

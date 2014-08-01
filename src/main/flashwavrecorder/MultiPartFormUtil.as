@@ -3,6 +3,7 @@ package flashwavrecorder {
   import flash.net.URLRequest;
   import flash.net.URLRequestMethod;
   import flash.utils.ByteArray;
+  import flash.net.URLRequestHeader;
 
   public class MultiPartFormUtil {
     public static function boundary():String {
